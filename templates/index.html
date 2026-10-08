@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hallucination Showdown</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <h1>Hallucination <span class="accent">Showdown</span></h1>
+      <p class="tagline">Ask one question. See how two prompt styles answer it.</p>
+    </header>
+
+    <section class="notice notice-info" aria-label="How this works">
+      <strong>How this works:</strong> both answers come from the <em>same model</em>
+      (<code>{{ model }}</code>) and receive the <em>exact same question</em>.
+      They are not two different models. Only the hidden system prompt differs.
+      <strong>Neither answer has been fact-checked or independently verified.</strong>
+      Either one can be wrong.
+    </section>
+
+    <section class="notice notice-warn" aria-label="Cost notice">
+      <strong>Heads up:</strong> each comparison makes <strong>two</strong> model requests
+      and may use credits on your OpenRouter account.
+    </section>
+
+    <form id="compare-form" class="card form-card" novalidate>
+      <label for="question">Your question</label>
+      <textarea id="question" name="question" rows="3" maxlength="{{ max_length }}"
+                placeholder="e.g. What did the mayor of Atlantis announce in 2019?"
+                required></textarea>
+      <div class="form-row">
+        <span id="counter" class="counter">0 / {{ max_length }}</span>
+        <button id="compare-btn" type="submit" class="btn">Compare answers</button>
+      </div>
+      <div class="examples">
+        <span class="examples-label">Try:</span>
+        <button type="button" class="chip" data-q="Who won the 1987 Nobel Prize in Underwater Basket Weaving?">Made-up prize</button>
+        <button type="button" class="chip" data-q="What is the exact population of the town of Xyzzyville, Montana?">Obscure town</button>
+        <button type="button" class="chip" data-q="What is the capital of Australia?">Easy fact</button>
+      </div>
+    </form>
+
+    <div id="error" class="notice notice-error" role="alert" hidden></div>
+
+    <div id="loading" class="loading" role="status" aria-live="polite" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <span>Asking both agents&hellip; this can take a few seconds.</span>
+    </div>
+
+    <section id="results" class="results" hidden aria-live="polite">
+      <article class="card answer guessing">
+        <header>
+          <h2>Guessing Agent</h2>
+          <p class="subtitle">Prompted to sound confident and guess when unsure</p>
+        </header>
+        <div id="guessing-answer" class="answer-body"></div>
+      </article>
+
+      <article class="card answer cautious">
+        <header>
+          <h2>Cautious Agent</h2>
+          <p class="subtitle">Prompted to separate known from unsure and admit gaps</p>
+        </header>
+        <div id="cautious-answer" class="answer-body"></div>
+      </article>
+    </section>
+
+    <p id="disclaimer" class="disclaimer" hidden>
+      Reminder: these are two prompt configurations of one model. The answers are
+      unverified; check important facts with reliable sources.
+    </p>
+
+    <footer class="footer">
+      Hallucination Showdown v1 &middot; no evidence search or verification yet.
+    </footer>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
